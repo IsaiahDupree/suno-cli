@@ -1,0 +1,24 @@
+{
+  "name": "suno-cli",
+  "version": "1.0.0",
+  "description": "Full-featured Suno browser automation — create, download, remix, extend, and cover tracks",
+  "main": "suno-cli.js",
+  "bin": {
+    "suno": "./suno-cli.js"
+  },
+  "scripts": {
+    "create": "node suno-cli.js create",
+    "download": "node suno-cli.js download",
+    "list": "node suno-cli.js list",
+    "remix": "node suno-cli.js remix",
+    "extend": "node suno-cli.js extend",
+    "cover": "node suno-cli.js cover",
+    "test:dry": "node suno-cli.js download --dry-run --limit 5"
+  },
+  "keywords": ["suno", "music", "ai", "automation", "playwright"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "playwright": "^1.58.2"
+  }
+}

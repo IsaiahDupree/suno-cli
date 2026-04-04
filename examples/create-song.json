@@ -1,0 +1,11 @@
+{
+  "prompt": null,
+  "lyrics": "[Verse 1]\nWalking through the city lights\nNeon signs reflecting in the rain\nEvery step a different sound\nLost and found again\n\n[Chorus]\nWe are the midnight runners\nChasing what we can't explain\nWe are the midnight runners\nDancing through the pain",
+  "style": "indie pop, synth wave, dreamy vocals",
+  "title": "Midnight Runners",
+  "instrumental": false,
+  "model": "v4",
+  "voice": null,
+  "autoDownload": true,
+  "format": "wav"
+}

@@ -1,0 +1,5 @@
+node_modules/
+browser-data/
+downloads/
+*.png
+selectors-report.json
