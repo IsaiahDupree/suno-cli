@@ -13,12 +13,22 @@
     "remix": "node suno-cli.js remix",
     "extend": "node suno-cli.js extend",
     "cover": "node suno-cli.js cover",
+    "test": "jest --verbose",
     "test:dry": "node suno-cli.js download --dry-run --limit 5"
   },
-  "keywords": ["suno", "music", "ai", "automation", "playwright"],
+  "keywords": [
+    "suno",
+    "music",
+    "ai",
+    "automation",
+    "playwright"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "playwright": "^1.58.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
