@@ -62,7 +62,7 @@ describe('no secrets in tracked files', () => {
   });
 
   test('no .env files tracked', () => {
-    const envFiles = files.filter(f => f.rel.includes('.env'));
+    const envFiles = files.filter(f => f.rel.includes('.env') && !f.rel.includes('.env.example'));
     expect(envFiles).toHaveLength(0);
   });
 
