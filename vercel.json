@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "name": "suno-cli",
+  "description": "Suno AI music generation CLI service",
+  "env": {
+    "SUNO_API_KEY": {
+      "description": "Suno API key for authentication"
+    },
+    "SUNO_PORT": {
+      "description": "Server port",
+      "default": "3000"
+    },
+    "SUNO_HOST": {
+      "description": "Server host",
+      "default": "0.0.0.0"
+    },
+    "SUPABASE_URL": {
+      "description": "Supabase project URL (optional)"
+    },
+    "SUPABASE_KEY": {
+      "description": "Supabase API key (optional)"
+    }
+  },
+  "builds": [
+    {
+      "src": "server-start.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server-start.js"
+    }
+  ],
+  "functions": {
+    "server-start.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  }
+}

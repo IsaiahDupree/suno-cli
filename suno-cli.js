@@ -117,7 +117,7 @@ const HELP = `
     console.log(`Loaded config from ${configFile}`);
   }
 
-  // Handle non-browser commands (config, help)
+  // Handle non-browser commands (config, help, server)
   if (command === 'config') {
     const { runConfig } = require('./lib/config');
     await runConfig({
@@ -127,6 +127,16 @@ const HELP = `
       reset: getFlag('--reset'),
     });
     process.exit(0);
+  }
+
+  if (command === 'server') {
+    const { SunoServer } = require('./lib/server');
+    const server = new SunoServer({
+      port: getArg('--port') || process.env.SUNO_PORT || 3000,
+      host: getArg('--host') || process.env.SUNO_HOST || 'localhost',
+    });
+    await server.start();
+    return; // Keep server running
   }
 
   const { context, page } = await launchBrowser();
