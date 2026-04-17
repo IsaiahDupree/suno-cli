@@ -24,6 +24,7 @@
 const fs = require('fs');
 const { launchBrowser } = require('./lib/browser');
 const { parseArgs } = require('./lib/utils');
+const { getConfig } = require('./lib/config-store');
 
 const HELP = `
 ╔══════════════════════════════════════════════════╗
@@ -33,9 +34,11 @@ const HELP = `
 ║    create    Create new music                    ║
 ║    download  Download tracks (WAV/MP3)           ║
 ║    list      List tracks in workspace            ║
+║    delete    Delete a track                      ║
 ║    remix     Remix an existing track             ║
 ║    extend    Extend an existing track            ║
-║    cover     Cover an existing track             ║
+║    cover     Create a cover of a track           ║
+║    config    Manage configuration                ║
 ║                                                  ║
 ║  Create options:                                 ║
 ║    --prompt "desc"     Simple mode description   ║
@@ -56,6 +59,10 @@ const HELP = `
 ║    --resume            Skip already downloaded   ║
 ║    --dry-run           List without downloading  ║
 ║                                                  ║
+║  Delete options:                                 ║
+║    --clip-id "id"      Track ID (required)       ║
+║    --confirm           Confirm deletion          ║
+║                                                  ║
 ║  Remix/Extend/Cover options:                     ║
 ║    --clip-id "id"      Track ID (required)       ║
 ║    --lyrics "text"     New/modified lyrics       ║
@@ -67,6 +74,18 @@ const HELP = `
 ║    --search "query"    Search tracks             ║
 ║    --limit N           Max tracks to list        ║
 ║    --json              Output as JSON            ║
+║                                                  ║
+║  Config options:                                 ║
+║    config              Show current config       ║
+║    config --get key    Get a value               ║
+║    config --set key val Set a value              ║
+║    config --reset      Reset to defaults         ║
+║                                                  ║
+║  Env vars (override flags):                      ║
+║    SUNO_MODEL          Default model (v5, v4)    ║
+║    SUNO_FORMAT         Default format (wav, mp3) ║
+║    SUNO_VOICE          Default voice             ║
+║    SUNO_STYLE          Default style             ║
 ╚══════════════════════════════════════════════════╝
 `;
 
@@ -78,16 +97,36 @@ const HELP = `
     process.exit(0);
   }
 
-  // Load config from JSON file if provided
-  let config = {};
+  // Load config from stored settings, then override with env vars, then CLI args
+  let config = getConfig(); // Load from ~/.suno/config.json
+
+  // Override with environment variables
+  config.model = process.env.SUNO_MODEL || config.model;
+  config.format = process.env.SUNO_FORMAT || config.format;
+  config.voice = process.env.SUNO_VOICE || config.voice;
+  config.style = process.env.SUNO_STYLE || config.style;
+
+  // Load config from JSON file if provided (highest priority)
   const configFile = getArg('--config');
   if (configFile) {
     if (!fs.existsSync(configFile)) {
       console.error(`Config file not found: ${configFile}`);
       process.exit(1);
     }
-    config = JSON.parse(fs.readFileSync(configFile, 'utf-8'));
+    config = { ...config, ...JSON.parse(fs.readFileSync(configFile, 'utf-8')) };
     console.log(`Loaded config from ${configFile}`);
+  }
+
+  // Handle non-browser commands (config, help)
+  if (command === 'config') {
+    const { runConfig } = require('./lib/config');
+    await runConfig({
+      get: getArg('--get'),
+      set: getArg('--set'),
+      value: getArg('--value') || getArgMulti('--value'),
+      reset: getFlag('--reset'),
+    });
+    process.exit(0);
   }
 
   const { context, page } = await launchBrowser();
@@ -129,6 +168,15 @@ const HELP = `
           search: getArgMulti('--search'),
           limit: getArg('--limit') ? parseInt(getArg('--limit')) : Infinity,
           json: getFlag('--json'),
+        });
+        break;
+      }
+
+      case 'delete': {
+        const { runDelete } = require('./lib/delete');
+        await runDelete(page, {
+          clipId: getArg('--clip-id'),
+          confirm: getFlag('--confirm'),
         });
         break;
       }

@@ -3,3 +3,5 @@ browser-data/
 downloads/
 *.png
 selectors-report.json
+harness-*.json
+harness-*.log
