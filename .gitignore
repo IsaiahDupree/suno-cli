@@ -1,7 +1,13 @@
 node_modules/
 browser-data/
 downloads/
+albums/
 *.png
 selectors-report.json
 harness-*.json
 harness-*.log
+
+# Environment
+.env
+.env.*
+!.env.example
